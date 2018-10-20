@@ -92,9 +92,7 @@ $(document).ready(function() {
     // Gets the digits for the number
     $(".number").on("click", function() {
         // If there is a result, then clear everything out.
-        if($("#result").text().length > 0) {
-            $("#button-clear").trigger("click");
-        }
+        reset();
 
         if(firstNumber) {
             $("#first-number").text($("#first-number").text() + $(this).attr("value"));
@@ -182,22 +180,35 @@ $(document).ready(function() {
     
     // Gets an operator and perform any intermediary operations and/or start getting the second number.
     $(".operator").on("click", function() {
-        operating($(this).attr("value"));
-        firstNumber = false;
-        $("#operator").html($(this).html());
+        // If there is a result, make sure to clear out all previous numbers and operators.
+        reset();
+
+        // Makes sure that there's at least one number before inserting an operator
+        if($("#first-number").text().length > 0) {
+            operating($(this).attr("value"));
+            firstNumber = false;
+            $("#operator").html($(this).html());
+        }
     });
 
     // Get the final result when "=" is pressed. Any number press afterward starts a new operation.
     $("#button-equal").on("click", function() {
         $("#result").text(getResult());
-        firstNumber = true;
     });
 
     // Clears numbers and operator on button click
     $("#button-clear").on("click", function() {
         $("#first-number, #second-number, #operator, #result").text("");
-        firstNumber = true;
     });
+
+    // When you need to start over, a clear is triggered.
+    function reset() {
+        if($("#result").text().length > 0) {
+            $("#button-clear").trigger("click");
+            firstNumber = true;
+            operator = false;
+        }
+    }
 });
 
 </script>
