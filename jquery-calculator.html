@@ -76,29 +76,26 @@ $(document).ready(function() {
 
 // Your code here...
     // Do operations as we go
-
-    // The result starts out as 0
-    var finalResult = 0;
-
     // Checks for conditions
     var operator = false;
     var firstNumber = true;
 
-    // Strings for operating
-    var digit1 = "";
-    var digit2 = "";
-
     // Operation object
     var operation = {
-        add: false,
-        subtract: false,
-        multiply: false,
+        plus: false,
+        minus: false,
+        times: false,
         divide: false,
-        exponent: false
+        power: false
     };
     
     // Gets the digits for the number
     $(".number").on("click", function() {
+        // If there is a result, then clear everything out.
+        if($("#result").text().length > 0) {
+            $("#button-clear").trigger("click");
+        }
+
         if(firstNumber) {
             $("#first-number").text($("#first-number").text() + $(this).attr("value"));
         } else {
@@ -107,25 +104,26 @@ $(document).ready(function() {
     });
 
     function getResult() {
-        $(operation).each(function(key, value) {
+        let result = 0;
+        
+        $.each(operation, function(key, value) {
             if(value) {
-                let result = 0;
-                let digit1 = parseInt($("#first-number").text());
-                let digit2 = parseInt($("#second-number").text());
+                let digit1 = parseFloat($("#first-number").text());
+                let digit2 = parseFloat($("#second-number").text());
                 
                 // The key is the operator, then get the result
                 switch(key) {
-                    case "add": {
+                    case "plus": {
                         result = digit1 + digit2;
                         break;
                     }
                     
-                    case "subtract": {
+                    case "minus": {
                         result = digit1 - digit2;
                         break;
                     }
 
-                    case "multiply": {
+                    case "times": {
                         result = digit1 * digit2;
                         break;
                     }
@@ -135,8 +133,8 @@ $(document).ready(function() {
                         break;
                     }
 
-                    case "exponent": {
-                        result = pow(digit1, digit2);
+                    case "power": {
+                        result = Math.pow(digit1, digit2);
                         break;
                     }
 
@@ -146,13 +144,15 @@ $(document).ready(function() {
                 }
 
                 // Turns the value to false
-                value = false;
+                operation[key] = false;
                 operator = false;
 
-                // Returns the result
-                return result;
+                return false;
             }
         });
+
+        // Returns the result
+        return result;
     }
 
     // Checks if there is currently an operator
@@ -168,22 +168,36 @@ $(document).ready(function() {
         
         if(!operator && ($("#second-number").text().length == 0)) {
             // New operator is set if there currently isn't an operator and the second number isn't set.
-            $(operation).each(function(key, value) {
+            $.each(operation, function(key, value) {
                 if(key == newOperator) {
-                    value = true;
+                    operation[key] = true;
                     operator = true;  
                     firstNumber = false;
+
+                    return false;
                 }
             });
         }
     }
     
-    // Individual operations
-    // Performs addition.
-    $("#button-plus").on("click", function() {
-        operating("add");
+    // Gets an operator and perform any intermediary operations and/or start getting the second number.
+    $(".operator").on("click", function() {
+        operating($(this).attr("value"));
+        firstNumber = false;
+        $("#operator").html($(this).html());
     });
 
+    // Get the final result when "=" is pressed. Any number press afterward starts a new operation.
+    $("#button-equal").on("click", function() {
+        $("#result").text(getResult());
+        firstNumber = true;
+    });
+
+    // Clears numbers and operator on button click
+    $("#button-clear").on("click", function() {
+        $("#first-number, #second-number, #operator, #result").text("");
+        firstNumber = true;
+    });
 });
 
 </script>
