@@ -75,6 +75,31 @@
 $(document).ready(function() {
 
 // Your code here...
+    // Do operations as we go
+
+    // The result starts out as 0
+    var finalResult = 0;
+
+    // Checks for conditions
+    var operator = false;
+    var firstNumber = true;
+
+    // Strings for operating
+    var digit1 = "";
+    var digit2 = "";
+    
+    // Checks if an operator is clicked
+    $(".number").on("click", function() {
+        if(firstNumber) {
+            digit1 += $(this).attr("value");
+            $("#first-number").html(digit1);
+        } else {
+            digit2 += $(this).attr("value");
+            $("#second-number").html(digit2);
+        }
+    });
+
+    // We need to make sure that there is two number 
 
 
 });
