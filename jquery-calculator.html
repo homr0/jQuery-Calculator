@@ -199,14 +199,14 @@ $(document).ready(function() {
     // Clears numbers and operator on button click
     $("#button-clear").on("click", function() {
         $("#first-number, #second-number, #operator, #result").text("");
+        firstNumber = true;
+        operator = false;
     });
 
     // When you need to start over, a clear is triggered.
     function reset() {
         if($("#result").text().length > 0) {
             $("#button-clear").trigger("click");
-            firstNumber = true;
-            operator = false;
         }
     }
 });
